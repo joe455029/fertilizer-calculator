@@ -5,9 +5,15 @@
 <meta name="theme-color" content="#173f35"><title>植養計算機｜肥料與菌劑配製</title>
 <style>
 :root{color-scheme:light;--bg:#f2f5f1;--panel:#fff;--ink:#21362f;--muted:#687b73;--edge:#dae5de;--primary:#247153;--deep:#173f35;--pale:#e8f3eb;--warn:#fff4db;--danger:#a63a31;--shadow:0 9px 30px #193d2b10}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",sans-serif;line-height:1.5}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}h1,h2,h3,p{margin:0}small,.muted{color:var(--muted)}.app{max-width:1100px;margin:auto;padding:22px 18px 90px}.top{background:linear-gradient(125deg,#173f35,#2c7659);color:white;padding:25px 26px;border-radius:22px;display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:18px}.top h1{font-size:clamp(24px,3vw,34px);letter-spacing:.03em}.top p{color:#d4e7dc;margin-top:5px}.top .tag{border:1px solid #ffffff66;padding:7px 12px;border-radius:50px;white-space:nowrap;font-size:12px}.nav{display:flex;gap:7px;overflow-x:auto;padding:3px 0 15px;scrollbar-width:none}.nav button{border:1px solid var(--edge);background:white;border-radius:13px;padding:11px 15px;font-weight:650;white-space:nowrap;color:var(--muted)}.nav button.active{background:var(--deep);border-color:var(--deep);color:white}.section{display:none}.section.active{display:block}.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(290px,.8fr);gap:17px}.stack{display:grid;gap:16px}.panel{background:var(--panel);border:1px solid var(--edge);border-radius:18px;padding:19px;box-shadow:var(--shadow);min-width:0}.panel h2{font-size:18px;margin-bottom:13px}.panel h3{font-size:15px}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.between{justify-content:space-between}.field{display:grid;gap:6px;min-width:0}.field label{font-weight:650;font-size:13px}.field input,.field select,.field textarea,.search{width:100%;min-width:0;background:#fff;border:1px solid #cddad1;border-radius:10px;padding:11px 12px;color:var(--ink);outline:none}.field input:focus,.field select:focus,.field textarea:focus,.search:focus{border-color:var(--primary);box-shadow:0 0 0 3px #24715320}.field textarea{min-height:70px;resize:vertical}.fields2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.fields3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.btn{border:0;border-radius:11px;padding:11px 15px;background:var(--primary);color:#fff;font-weight:700}.btn.secondary{background:#e8f2eb;color:var(--deep)}.btn.outline{background:white;border:1px solid #bacdc1;color:var(--deep)}.btn.danger{color:var(--danger);background:#fcece9}.btn.small{padding:7px 10px;font-size:12px}.btn.icon{padding:7px 10px}.hint{font-size:12px;color:var(--muted);margin-top:7px}.pill{display:inline-block;background:var(--pale);color:var(--deep);border-radius:50px;padding:4px 9px;font-size:12px;font-weight:650}.alert{padding:12px 13px;border-radius:12px;background:var(--warn);color:#715424;font-size:13px;margin-top:13px}.alert.danger{background:#fcebe8;color:#8b302c}.alert.info{background:#e9f2f0;color:#355d51}.item{border:1px solid var(--edge);border-radius:14px;padding:14px;margin-top:12px;background:#fcfdfc}.item .item-title{display:flex;gap:9px;align-items:center;justify-content:space-between;margin-bottom:11px}.item .item-title input[type=checkbox]{width:20px;height:20px;accent-color:var(--primary)}.item .amount{font-size:23px;color:var(--primary);font-weight:800}.item .invalid{color:var(--danger)}.summary-value{font-size:27px;color:var(--deep);font-weight:800;line-height:1.2}.summary-box{background:#edf6f0;border-radius:14px;padding:15px}.summary-box p{font-size:12px;color:var(--muted);margin-bottom:5px}.result-row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--edge);align-items:baseline}.result-row:last-child{border:0}.scroll-list{display:grid;gap:10px}.record{border:1px solid var(--edge);border-radius:12px;padding:12px;background:white}.record strong{display:block}.record p{font-size:13px;color:var(--muted);margin:5px 0}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.empty{padding:25px;text-align:center;background:#f7faf7;color:var(--muted);border-radius:12px}.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.metric{background:#eaf3eb;padding:14px;border-radius:13px}.metric strong{display:block;font-size:23px;color:var(--deep)}.metric span{font-size:12px;color:var(--muted)}.hide{display:none!important}footer{text-align:center;font-size:12px;color:var(--muted);margin:25px 0}.checkbox-label{display:flex;gap:8px;align-items:center;font-size:13px}.checkbox-label input{accent-color:var(--primary);width:17px;height:17px}.modal-backdrop{position:fixed;inset:0;background:#102b2180;z-index:10;display:flex;align-items:center;justify-content:center;padding:14px}.modal{background:white;border-radius:18px;padding:20px;max-width:550px;width:100%;max-height:88vh;overflow:auto}.modal h2{margin-bottom:15px}.tabsub{color:var(--muted);font-size:13px;margin-bottom:12px}.line{border-top:1px solid var(--edge);margin:14px 0}input[type=file]{max-width:100%}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#193f34;color:white;border-radius:10px;padding:11px 18px;z-index:20;box-shadow:var(--shadow);max-width:90vw;display:none}.toast.show{display:block}@media(max-width:760px){.app{padding:12px 11px 75px}.top{padding:20px 17px;border-radius:16px;align-items:flex-start}.top h1{font-size:24px}.top .tag{font-size:10px;padding:5px 7px}.nav{position:sticky;top:0;z-index:4;background:var(--bg);padding-top:6px}.nav button{padding:11px 13px}.layout{grid-template-columns:minmax(0,1fr)}.panel{padding:15px;border-radius:15px}.fields3{grid-template-columns:repeat(2,minmax(0,1fr))}.fields2{grid-template-columns:repeat(2,minmax(0,1fr))}.info-grid{gap:6px}.metric{padding:9px}.metric strong{font-size:19px}.item .amount{font-size:21px}}@media(max-width:400px){.fields3{grid-template-columns:1fr 1fr}.top .tag{display:none}.btn{padding:10px 12px}}
+.auth-box{background:#fff;border:1px solid var(--edge);border-radius:16px;padding:15px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.auth-details{min-width:230px;flex:1}.auth-details p{margin-top:4px;font-size:13px;color:var(--muted);overflow-wrap:anywhere}.auth-actions{display:flex;gap:8px;flex-wrap:wrap}@media(max-width:480px){.auth-actions{width:100%}.auth-actions .btn{flex:1}}
 </style></head>
 <body><div class="app">
 <header class="top"><div><h1>🌱 植養計算機</h1><p>肥料・菌劑・配方・施用紀錄，一站完成</p></div><span class="tag">手機／電腦適用 · 離線可用</span></header>
+<section class="auth-box" aria-label="Google 帳號登入">
+  <div class="auth-details"><strong>☁️ Google 帳號連線測試</strong><p id="authStatus" role="status">正在載入 Google 登入功能…</p><p id="authIdentity" class="hint"></p></div>
+  <div class="auth-actions"><button class="btn" id="googleLogin" type="button" disabled>使用 Google 登入</button><button class="btn secondary hide" id="googleLogout" type="button">登出</button><button class="btn outline hide" id="copyUid" type="button">複製 UID</button></div>
+</section>
+<div class="alert info" style="margin:0 0 14px">🔒 V1.1 第一階段：僅驗證 Google 登入與取得個人 UID；資材、配方及紀錄仍保存在這台裝置，尚未啟用跨裝置雲端同步。Firestore 存取規則請保持 <code>allow read, write: if false;</code>。</div>
 <nav class="nav" id="tabs" aria-label="主要功能"><button data-tab="calc" class="active">🧪 配製計算</button><button data-tab="materials">🌿 資材庫</button><button data-tab="recipes">📋 我的配方</button><button data-tab="history">🗓️ 施用紀錄</button><button data-tab="settings">⚙️ 設定備份</button></nav>
 <main>
 <section id="calc" class="section active"><div class="layout"><div class="stack">
@@ -17,8 +23,8 @@
 <section id="materials" class="section"><div class="panel"><div class="row between"><div><h2>常用資材資料庫</h2><p class="hint">儲存常用倍率範圍、劑型和配製方式。產品數據均由你自行輸入。</p></div><button class="btn" id="newMaterial">＋ 新增資材</button></div><input id="searchMaterial" class="search" placeholder="搜尋資材名稱／類別" style="margin:14px 0"><div class="scroll-list" id="materialList"></div></div></section>
 <section id="recipes" class="section"><div class="panel"><div class="row between"><div><h2>我的常用配方</h2><p class="hint">儲存整組配方、倍率與用途，可快速回填計算頁重新調整水量。</p></div><button class="btn secondary" data-goto="calc">返回配製</button></div><div class="scroll-list" id="recipeList" style="margin-top:14px"></div></div></section>
 <section id="history" class="section"><div class="panel"><div class="row between"><div><h2>施用歷史紀錄</h2><p class="hint">每筆記錄保存施用日期、水量、植物、資材與當時用量快照。</p></div><button class="btn secondary" data-goto="calc">新增施用</button></div><div class="scroll-list" id="historyList" style="margin-top:14px"></div></div></section>
-<section id="settings" class="section"><div class="stack"><div class="panel"><h2>顯示與計算設定</h2><div class="fields2"><div class="field"><label for="precision">數字顯示小數位</label><select id="precision"><option value="0">整數</option><option value="1">1 位</option><option value="2">2 位</option><option value="3">3 位</option></select></div><div class="field"><label for="roundMethod">取位方式</label><select id="roundMethod"><option value="round">四捨五入</option><option value="ceil">無條件進位</option><option value="floor">無條件捨去</option></select></div></div><p class="hint">介面顯示精度不改變原始計算結果。實際量取應考慮量杯、量筒或電子秤精度。</p></div><div class="panel"><h2>資料備份與匯出</h2><p class="hint">目前以本機瀏覽器儲存（localStorage），不需要帳號。不同手機、電腦或瀏覽器不會自動同步，清除網站資料可能造成遺失；請定期備份 JSON。</p><div class="actions"><button class="btn" id="exportJson">下載完整 JSON 備份</button><button class="btn secondary" id="exportCSV">匯出施用紀錄 CSV</button><label class="btn outline" style="cursor:pointer">匯入 JSON 備份 <input type="file" id="importJson" accept=".json,application/json" hidden></label></div><div class="alert info">手機使用建議：將本頁部署到 GitHub Pages 等 HTTPS 靜態網站，然後使用瀏覽器「加入主畫面」。部署後的本機資料仍不會跨裝置同步。</div></div><div class="panel"><h2>資料管理</h2><p class="hint">清除動作無法復原。建議先下載備份。</p><button class="btn danger" id="clearAll">清除所有本機資料</button></div></div></section>
-</main><footer>植養計算機 v1.0 · 個人園藝配製輔助 · 非農藥／肥料專業混用核准工具</footer></div>
+<section id="settings" class="section"><div class="stack"><div class="panel"><h2>顯示與計算設定</h2><div class="fields2"><div class="field"><label for="precision">數字顯示小數位</label><select id="precision"><option value="0">整數</option><option value="1">1 位</option><option value="2">2 位</option><option value="3">3 位</option></select></div><div class="field"><label for="roundMethod">取位方式</label><select id="roundMethod"><option value="round">四捨五入</option><option value="ceil">無條件進位</option><option value="floor">無條件捨去</option></select></div></div><p class="hint">介面顯示精度不改變原始計算結果。實際量取應考慮量杯、量筒或電子秤精度。</p></div><div class="panel"><h2>資料備份與匯出</h2><p class="hint">目前此測試版仍以本機瀏覽器儲存（localStorage）；Google 登入僅供取得 UID。不同手機、電腦或瀏覽器尚不會自動同步，清除網站資料可能造成遺失；請定期備份 JSON。</p><div class="actions"><button class="btn" id="exportJson">下載完整 JSON 備份</button><button class="btn secondary" id="exportCSV">匯出施用紀錄 CSV</button><label class="btn outline" style="cursor:pointer">匯入 JSON 備份 <input type="file" id="importJson" accept=".json,application/json" hidden></label></div><div class="alert info">手機使用建議：將本頁部署到 GitHub Pages 等 HTTPS 靜態網站，然後使用瀏覽器「加入主畫面」。部署後的本機資料仍不會跨裝置同步。</div></div><div class="panel"><h2>資料管理</h2><p class="hint">清除動作無法復原。建議先下載備份。</p><button class="btn danger" id="clearAll">清除所有本機資料</button></div></div></section>
+</main><footer>植養計算機 v1.1 登入測試版 · 個人園藝配製輔助 · 非農藥／肥料專業混用核准工具</footer></div>
 <div id="modalMount"></div><div class="toast" id="toast" role="status"></div>
 <script>
 (()=>{'use strict';
@@ -64,4 +70,63 @@ $('#importJson').onchange=async e=>{const file=e.target.files?.[0];if(!file)retu
 $('#clearAll').onclick=()=>{if(!confirm('確定清除所有資材、配方、紀錄及設定？此動作無法復原。'))return;if(!confirm('再次確認：所有本機資料都將刪除。'))return;db=empty();persist();tab('calc');toast('資料已清除')};
 renderCalc();
 })();
-</script></body></html>
+</script>
+<script type="module">
+// V1.1 第 1 階段：只啟用 Google 登入，不存取 Firestore。
+// Firebase 網頁應用程式設定為公開用戶端識別資訊，不是管理員金鑰。
+const firebaseConfig = {
+  apiKey: "AIzaSyBWarkuQ4pceB5vHMQRqiJiX01jyiBkQ0",
+  authDomain: "fertilizer-calculator-121e7.firebaseapp.com",
+  projectId: "fertilizer-calculator-121e7",
+  storageBucket: "fertilizer-calculator-121e7.firebasestorage.app",
+  messagingSenderId: "333155120474",
+  appId: "1:333155120474:web:a0bd970e7dd3e88dc92f63"
+};
+const status = document.getElementById('authStatus');
+const identity = document.getElementById('authIdentity');
+const login = document.getElementById('googleLogin');
+const logout = document.getElementById('googleLogout');
+const copy = document.getElementById('copyUid');
+function feedback(message) { status.textContent = message; }
+try {
+  const [{initializeApp},{getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged}] = await Promise.all([
+    import('https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js'),
+    import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js')
+  ]);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  auth.languageCode = 'zh-TW';
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({prompt:'select_account'});
+  onAuthStateChanged(auth, (user) => {
+    login.disabled = false;
+    if (user) {
+      feedback('✅ Google 登入成功（雲端同步尚未開啟）');
+      identity.textContent = `${user.displayName || 'Google 使用者'}｜${user.email || ''}｜UID：${user.uid}`;
+      login.classList.add('hide'); logout.classList.remove('hide'); copy.classList.remove('hide');
+      copy.onclick = async () => { try { await navigator.clipboard.writeText(user.uid); feedback('✅ UID 已複製，可到 Firebase Authentication 核對'); } catch { feedback('複製失敗，請手動選取 UID'); } };
+    } else {
+      feedback('尚未登入。點選「使用 Google 登入」，授權後即可取得 UID。');
+      identity.textContent = '';
+      login.classList.remove('hide'); logout.classList.add('hide'); copy.classList.add('hide');
+    }
+  }, err => feedback('無法讀取登入狀態：' + err.message));
+  login.onclick = async () => {
+    login.disabled = true; feedback('正在開啟 Google 登入視窗…');
+    try { await signInWithPopup(auth,provider); }
+    catch (err) {
+      const messages = {
+        'auth/popup-blocked':'登入視窗遭瀏覽器阻擋。請允許彈出式視窗後重試。',
+        'auth/popup-closed-by-user':'登入視窗已關閉，尚未完成登入。',
+        'auth/unauthorized-domain':'網站網域未獲授權，請確認 Authentication → 授權網域已加入 joe455029.github.io。',
+        'auth/operation-not-allowed':'Google 登入方式尚未啟用。',
+        'auth/invalid-api-key':'Firebase API Key 設定有誤，請核對 Firebase 控制台的網頁設定。',
+        'auth/network-request-failed':'網路連線失敗，請檢查連線。'
+      };
+      feedback('❌ ' + (messages[err.code] || `${err.code || '登入失敗'}：${err.message}`));
+    } finally { login.disabled = false; }
+  };
+  logout.onclick = async () => { try { await signOut(auth); } catch (err) { feedback('登出失敗：' + err.message); } };
+} catch (err) { feedback('❌ Firebase SDK 載入失敗，請確認網路及瀏覽器：' + err.message); }
+</script>
+</body></html>
