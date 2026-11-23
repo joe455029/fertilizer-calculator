@@ -10,10 +10,10 @@
 <body><div class="app">
 <header class="top"><div><h1>🌱 植養計算機</h1><p>肥料・菌劑・配方・施用紀錄，一站完成</p></div><span class="tag">手機／電腦適用 · 離線可用</span></header>
 <section class="auth-box" aria-label="Google 帳號登入">
-  <div class="auth-details"><strong>☁️ Google 帳號連線測試</strong><p id="authStatus" role="status">正在載入 Google 登入功能…</p><p id="authIdentity" class="hint"></p></div>
+  <div class="auth-details"><strong>☁️ Google 帳號與雲端同步</strong><p id="authStatus" role="status">正在載入 Google 登入功能…</p><p id="authIdentity" class="hint"></p></div>
   <div class="auth-actions"><button class="btn" id="googleLogin" type="button" disabled>使用 Google 登入</button><button class="btn secondary hide" id="googleLogout" type="button">登出</button><button class="btn outline hide" id="copyUid" type="button">複製 UID</button></div>
 </section>
-<div class="alert info" style="margin:0 0 14px">🔒 V1.1 第一階段：僅驗證 Google 登入與取得個人 UID；資材、配方及紀錄仍保存在這台裝置，尚未啟用跨裝置雲端同步。Firestore 存取規則請保持 <code>allow read, write: if false;</code>。</div>
+<div class="panel" id="cloudPanel" style="margin-bottom:14px"><div class="row between"><h2 style="margin:0">☁️ 雲端資料同步</h2><span class="pill" id="cloudBadge">尚未連線</span></div><p class="hint" id="cloudMessage">請先登入 Google 帳號，再選擇如何處理本機與雲端資料。</p><div class="actions" id="cloudChoices" style="display:none"><button class="btn small" id="cloudUse">使用雲端資料</button><button class="btn small secondary" id="cloudMerge">合併本機與雲端</button><button class="btn small outline" id="cloudReplace">以本機覆蓋雲端</button></div><div class="actions"><button class="btn small secondary" id="cloudRetry" style="display:none">重新載入同步狀態</button><button class="btn small outline" id="cloudBackup">下載目前本機備份</button></div><p class="hint">首次同步前請先下載備份。多裝置同時修改時會偵測版本衝突並暫停自動上傳，避免靜默覆寫。雲端為主要資料來源；離線期間修改暫存於本機，重新上線後須確認同步狀態。</p></div>
 <nav class="nav" id="tabs" aria-label="主要功能"><button data-tab="calc" class="active">🧪 配製計算</button><button data-tab="materials">🌿 資材庫</button><button data-tab="recipes">📋 我的配方</button><button data-tab="history">🗓️ 施用紀錄</button><button data-tab="settings">⚙️ 設定備份</button></nav>
 <main>
 <section id="calc" class="section active"><div class="layout"><div class="stack">
@@ -23,15 +23,15 @@
 <section id="materials" class="section"><div class="panel"><div class="row between"><div><h2>常用資材資料庫</h2><p class="hint">儲存常用倍率範圍、劑型和配製方式。產品數據均由你自行輸入。</p></div><button class="btn" id="newMaterial">＋ 新增資材</button></div><input id="searchMaterial" class="search" placeholder="搜尋資材名稱／類別" style="margin:14px 0"><div class="scroll-list" id="materialList"></div></div></section>
 <section id="recipes" class="section"><div class="panel"><div class="row between"><div><h2>我的常用配方</h2><p class="hint">儲存整組配方、倍率與用途，可快速回填計算頁重新調整水量。</p></div><button class="btn secondary" data-goto="calc">返回配製</button></div><div class="scroll-list" id="recipeList" style="margin-top:14px"></div></div></section>
 <section id="history" class="section"><div class="panel"><div class="row between"><div><h2>施用歷史紀錄</h2><p class="hint">每筆記錄保存施用日期、水量、植物、資材與當時用量快照。</p></div><button class="btn secondary" data-goto="calc">新增施用</button></div><div class="scroll-list" id="historyList" style="margin-top:14px"></div></div></section>
-<section id="settings" class="section"><div class="stack"><div class="panel"><h2>顯示與計算設定</h2><div class="fields2"><div class="field"><label for="precision">數字顯示小數位</label><select id="precision"><option value="0">整數</option><option value="1">1 位</option><option value="2">2 位</option><option value="3">3 位</option></select></div><div class="field"><label for="roundMethod">取位方式</label><select id="roundMethod"><option value="round">四捨五入</option><option value="ceil">無條件進位</option><option value="floor">無條件捨去</option></select></div></div><p class="hint">介面顯示精度不改變原始計算結果。實際量取應考慮量杯、量筒或電子秤精度。</p></div><div class="panel"><h2>資料備份與匯出</h2><p class="hint">目前此測試版仍以本機瀏覽器儲存（localStorage）；Google 登入僅供取得 UID。不同手機、電腦或瀏覽器尚不會自動同步，清除網站資料可能造成遺失；請定期備份 JSON。</p><div class="actions"><button class="btn" id="exportJson">下載完整 JSON 備份</button><button class="btn secondary" id="exportCSV">匯出施用紀錄 CSV</button><label class="btn outline" style="cursor:pointer">匯入 JSON 備份 <input type="file" id="importJson" accept=".json,application/json" hidden></label></div><div class="alert info">手機使用建議：將本頁部署到 GitHub Pages 等 HTTPS 靜態網站，然後使用瀏覽器「加入主畫面」。部署後的本機資料仍不會跨裝置同步。</div></div><div class="panel"><h2>資料管理</h2><p class="hint">清除動作無法復原。建議先下載備份。</p><button class="btn danger" id="clearAll">清除所有本機資料</button></div></div></section>
-</main><footer>植養計算機 v1.1 登入測試版 · 個人園藝配製輔助 · 非農藥／肥料專業混用核准工具</footer></div>
+<section id="settings" class="section"><div class="stack"><div class="panel"><h2>顯示與計算設定</h2><div class="fields2"><div class="field"><label for="precision">數字顯示小數位</label><select id="precision"><option value="0">整數</option><option value="1">1 位</option><option value="2">2 位</option><option value="3">3 位</option></select></div><div class="field"><label for="roundMethod">取位方式</label><select id="roundMethod"><option value="round">四捨五入</option><option value="ceil">無條件進位</option><option value="floor">無條件捨去</option></select></div></div><p class="hint">介面顯示精度不改變原始計算結果。實際量取應考慮量杯、量筒或電子秤精度。</p></div><div class="panel"><h2>資料備份與匯出</h2><p class="hint">目前此測試版仍以本機瀏覽器儲存（localStorage）；Google 登入僅供取得 UID。不同手機、電腦或瀏覽器尚不會自動同步，清除網站資料可能造成遺失；請定期備份 JSON。</p><div class="actions"><button class="btn" id="exportJson">下載完整 JSON 備份</button><button class="btn secondary" id="exportCSV">匯出施用紀錄 CSV</button><label class="btn outline" style="cursor:pointer">匯入 JSON 備份 <input type="file" id="importJson" accept=".json,application/json" hidden></label></div><div class="alert info">手機可透過原 GitHub Pages 網址使用，並以相同 Google 帳號登入。首次在新裝置登入，請選擇「使用雲端資料」，不要以空白本機資料覆蓋雲端。</div></div><div class="panel"><h2>資料管理</h2><p class="hint">清除動作無法復原。建議先下載備份。</p><button class="btn danger" id="clearAll">清除所有本機資料</button></div></div></section>
+</main><footer>植養計算機 v1.2 雲端同步版 · 個人園藝配製輔助 · 非農藥／肥料專業混用核准工具</footer></div>
 <div id="modalMount"></div><div class="toast" id="toast" role="status"></div>
 <script>
 (()=>{'use strict';
 const KEY='plantmix_v1_data'; const $=s=>document.querySelector(s);const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const uid=()=>String(Date.now())+'_'+Math.random().toString(36).slice(2,8);const stamp=()=>new Date().toISOString();
 const empty=()=>({materials:[],recipes:[],history:[],settings:{precision:2,roundMethod:'round'},mix:{water:45,mode:'water',plant:'',name:'',note:'',items:[{id:uid(),enabled:true,name:'',materialId:null,mode:'ratio',rate:'',unit:'ml',minRate:'',maxRate:'',category:'未分類'}]}});
 let db;try{db=JSON.parse(localStorage.getItem(KEY))||empty()}catch{db=empty()};if(!db||!db.mix||!Array.isArray(db.materials)||!Array.isArray(db.recipes)||!Array.isArray(db.history))db=empty();db.settings={...empty().settings,...(db.settings||{})};db.mix={...empty().mix,...(db.mix||{})};if(!Array.isArray(db.mix.items))db.mix.items=[];
-let currentTab='calc';const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){toast('無法寫入本機儲存，請先匯出備份')}};
+let currentTab='calc';let suppressCloud=false;const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){toast('無法寫入本機儲存，請先匯出備份')}if(!suppressCloud)window.plantCloudBridge?.changed?.()};
 function toast(m){const el=$('#toast');el.textContent=m;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),3000)}
 function fmt(v){if(!Number.isFinite(v))return '—';const n=Math.min(3,Math.max(0,Number(db.settings.precision)||0)),f=10**n;let x=db.settings.roundMethod==='ceil'?Math.ceil((v-1e-10)*f)/f:db.settings.roundMethod==='floor'?Math.floor((v+1e-10)*f)/f:Math.round((v+Number.EPSILON)*f)/f;return x.toLocaleString('zh-TW',{minimumFractionDigits:0,maximumFractionDigits:n})}
 function validPositive(n){return n!==''&&n!==null&&Number.isFinite(Number(n))&&Number(n)>0}
@@ -68,12 +68,11 @@ $('#recipeList').onclick=e=>{const b=e.target.closest('[data-action]');if(!b)ret
 $('#precision').onchange=e=>{db.settings.precision=Number(e.target.value);persist()};$('#roundMethod').onchange=e=>{db.settings.roundMethod=e.target.value;persist()};$('#exportJson').onclick=()=>download(new Blob([JSON.stringify({format:'plantmix_v1',exportedAt:stamp(),data:db},null,2)],{type:'application/json'}),'植養計算機完整備份.json');$('#exportCSV').onclick=exportCSV;
 $('#importJson').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const raw=JSON.parse(await file.text());const d=raw.data;if(raw.format!=='plantmix_v1'||!d||!Array.isArray(d.materials)||!Array.isArray(d.recipes)||!Array.isArray(d.history)||!d.mix||!Array.isArray(d.mix.items))throw Error('格式不符');if(!confirm('匯入會取代目前所有本機資料，是否確定？'))return;db=d;db.settings={...empty().settings,...db.settings};persist();tab('calc');toast('備份已匯入')}catch(err){toast('無法匯入：'+err.message)}finally{e.target.value=''}};
 $('#clearAll').onclick=()=>{if(!confirm('確定清除所有資材、配方、紀錄及設定？此動作無法復原。'))return;if(!confirm('再次確認：所有本機資料都將刪除。'))return;db=empty();persist();tab('calc');toast('資料已清除')};
+window.plantCloudData={get:()=>structuredClone(db),set:(next)=>{suppressCloud=true;try{db=structuredClone(next);db.settings={...empty().settings,...(db.settings||{})};db.mix={...empty().mix,...(db.mix||{})};persist();tab(currentTab)}finally{suppressCloud=false}},backup:()=>document.querySelector('#exportJson').click()};
 renderCalc();
 })();
 </script>
 <script type="module">
-// V1.1 第 1 階段：只啟用 Google 登入，不存取 Firestore。
-// Firebase 網頁應用程式設定為公開用戶端識別資訊，不是管理員金鑰。
 const firebaseConfig = {
   apiKey: "AIzaSyBWWarkuQ4pceB5vHMQRqiJjX01jyiBkQ0",
   authDomain: "fertilizer-calculator-121e7.firebaseapp.com",
@@ -82,51 +81,74 @@ const firebaseConfig = {
   messagingSenderId: "333155120474",
   appId: "1:333155120474:web:a0bd970e7dd3e88dc92f63"
 };
-const status = document.getElementById('authStatus');
-const identity = document.getElementById('authIdentity');
-const login = document.getElementById('googleLogin');
-const logout = document.getElementById('googleLogout');
-const copy = document.getElementById('copyUid');
-function feedback(message) { status.textContent = message; }
-try {
-  const [{initializeApp},{getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged}] = await Promise.all([
-    import('https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js'),
-    import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js')
-  ]);
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  auth.languageCode = 'zh-TW';
-  const provider = new GoogleAuthProvider();
-  provider.setCustomParameters({prompt:'select_account'});
-  onAuthStateChanged(auth, (user) => {
-    login.disabled = false;
-    if (user) {
-      feedback('✅ Google 登入成功（雲端同步尚未開啟）');
-      identity.textContent = `${user.displayName || 'Google 使用者'}｜${user.email || ''}｜UID：${user.uid}`;
-      login.classList.add('hide'); logout.classList.remove('hide'); copy.classList.remove('hide');
-      copy.onclick = async () => { try { await navigator.clipboard.writeText(user.uid); feedback('✅ UID 已複製，可到 Firebase Authentication 核對'); } catch { feedback('複製失敗，請手動選取 UID'); } };
-    } else {
-      feedback('尚未登入。點選「使用 Google 登入」，授權後即可取得 UID。');
-      identity.textContent = '';
-      login.classList.remove('hide'); logout.classList.add('hide'); copy.classList.add('hide');
-    }
-  }, err => feedback('無法讀取登入狀態：' + err.message));
-  login.onclick = async () => {
-    login.disabled = true; feedback('正在開啟 Google 登入視窗…');
-    try { await signInWithPopup(auth,provider); }
-    catch (err) {
-      const messages = {
-        'auth/popup-blocked':'登入視窗遭瀏覽器阻擋。請允許彈出式視窗後重試。',
-        'auth/popup-closed-by-user':'登入視窗已關閉，尚未完成登入。',
-        'auth/unauthorized-domain':'網站網域未獲授權，請確認 Authentication → 授權網域已加入 joe455029.github.io。',
-        'auth/operation-not-allowed':'Google 登入方式尚未啟用。',
-        'auth/invalid-api-key':'Firebase API Key 設定有誤，請核對 Firebase 控制台的網頁設定。',
-        'auth/network-request-failed':'網路連線失敗，請檢查連線。'
-      };
-      feedback('❌ ' + (messages[err.code] || `${err.code || '登入失敗'}：${err.message}`));
-    } finally { login.disabled = false; }
-  };
-  logout.onclick = async () => { try { await signOut(auth); } catch (err) { feedback('登出失敗：' + err.message); } };
-} catch (err) { feedback('❌ Firebase SDK 載入失敗，請確認網路及瀏覽器：' + err.message); }
+const OWNER_UID = '1qh1dkPj1Gef4UcIpP5XZHK3kfz1';
+const $ = id => document.getElementById(id);
+const status=$('authStatus'),identity=$('authIdentity'),login=$('googleLogin'),logout=$('googleLogout'),copy=$('copyUid');
+const badge=$('cloudBadge'),message=$('cloudMessage'),choices=$('cloudChoices'),retry=$('cloudRetry');
+const setState=(label,detail)=>{badge.textContent=label;message.textContent=detail};
+$('cloudBackup').onclick=()=>window.plantCloudData.backup();
+let firebaseAuth, user=null, docRef=null, baseRev=null, baseData=null, ready=false, dirty=false, busy=false, timer=null, unsubscribe=null;
+let runTransaction,doc,getDoc,onSnapshot,serverTimestamp,firestore;
+const current=()=>window.plantCloudData.get();
+const clone=x=>structuredClone(x);
+function normalize(data){if(!data||!Array.isArray(data.materials)||!Array.isArray(data.recipes)||!Array.isArray(data.history)||!data.mix||!Array.isArray(data.mix.items))throw new Error('雲端資料格式不符');return clone(data)}
+function merge(local,cloud){const out=clone(cloud);for(const key of ['materials','recipes','history']){const map=new Map((cloud[key]||[]).map(x=>[String(x.id),x]));for(const x of local[key]||[])if(!map.has(String(x.id)))map.set(String(x.id),x);out[key]=Array.from(map.values())}out.mix=local.mix;out.settings=local.settings;return out}
+const listChoices=()=>{choices.style.display='flex';retry.style.display='inline-block'};
+const hideChoices=()=>{choices.style.display='none';retry.style.display='none'};
+const isLocalBlank=d=>!d.materials.length&&!d.recipes.length&&!d.history.length&&!(d.mix.items||[]).some(x=>x.name||x.rate);
+function watchCloud(){
+ if(unsubscribe){unsubscribe();unsubscribe=null}
+ if(!docRef||!ready)return;
+ unsubscribe=onSnapshot(docRef,{includeMetadataChanges:false},snap=>{
+  if(!snap.exists()||snap.metadata.hasPendingWrites||!ready)return;
+  const remote=snap.data();const rev=remote.revision??null;
+  if(rev===baseRev||busy)return;
+  try{const data=normalize(remote.data);baseRev=rev;baseData=clone(data);
+   if(dirty){ready=false;clearTimeout(timer);setState('同步衝突','另一台裝置已更新資料。請先備份，再選擇使用雲端、合併或覆蓋。');listChoices();return}
+   window.plantCloudData.set(data);setState('已同步','已收到另一台裝置更新的雲端資料。');
+  }catch(e){ready=false;setState('同步異常',e.message);listChoices()}
+ },e=>{ready=false;setState('監聽失敗',`${e.code||''} ${e.message}；請重新載入。`);retry.style.display='inline-block'});
+}
+
+window.plantCloudBridge={changed(){if(!ready)return;dirty=true;setState('待同步','本機有新修改，正準備上傳。');clearTimeout(timer);timer=setTimeout(()=>sync(),1200)}};
+async function sync(force=false){if(!ready||!user||busy||!navigator.onLine)return;if(!dirty&&!force)return;busy=true;clearTimeout(timer);
+ const payload=current();const expected=baseRev;
+ try{const rev=await runTransaction(firestore,async tx=>{const snap=await tx.get(docRef);const remote=snap.exists()?snap.data():null;const actual=remote?.revision??null;if(actual!==expected)throw new Error('REMOTE_CHANGED');const next=(actual??0)+1;tx.set(docRef,{data:payload,revision:next,updatedAt:serverTimestamp(),format:'plantmix_v12'});return next});baseRev=rev;baseData=clone(payload);dirty=false;setState('已同步','已安全寫入雲端；手機與電腦可共用這份資料。');watchCloud()}
+ catch(e){dirty=true;ready=false;if(e.message==='REMOTE_CHANGED'){setState('版本衝突','另一台裝置已更新雲端。請先下載本機備份，再選擇使用雲端、合併或覆蓋。')}else setState('同步失敗',`${e.code||''} ${e.message}。請確認網路及規則，按「重新載入同步狀態」。`);listChoices()}
+ finally{busy=false;if(ready&&dirty)clearTimeout(timer),timer=setTimeout(()=>sync(),1400)}
+}
+async function inspect(){if(!user||user.uid!==OWNER_UID)return;ready=false;dirty=false;hideChoices();setState('檢查中','正在檢查雲端資料，尚未寫入任何內容。');try{const snap=await getDoc(docRef);const remote=snap.exists()?snap.data():null;baseRev=remote?.revision??null;baseData=remote?.data?normalize(remote.data):null;
+ if(!baseData){setState('首次設定','雲端目前沒有資料。請先下載備份，再點「以本機覆蓋雲端」建立第一份資料；若本機有舊資料將一併上傳。');listChoices();$('cloudUse').disabled=true;$('cloudMerge').disabled=true;return}
+ $('cloudUse').disabled=false;$('cloudMerge').disabled=false;
+ const local=current();if(isLocalBlank(local)){window.plantCloudData.set(baseData);ready=true;setState('已同步','已自動載入雲端資料（這台裝置沒有既有資材或紀錄）。');watchCloud();return}
+ if(JSON.stringify(local)===JSON.stringify(baseData)){ready=true;setState('已同步','本機資料與雲端一致，可以直接操作。');watchCloud();return}
+ setState('等待選擇','本機與雲端都有資料且內容不同。請先備份，再選擇使用雲端、合併，或以本機覆蓋雲端。');listChoices();
+ }catch(e){setState('讀取失敗',`${e.code||''} ${e.message}。目前僅可本機使用。`);retry.style.display='inline-block'}}
+$('cloudUse').onclick=()=>{if(!baseData)return;if(!confirm('使用雲端資料會取代這台裝置目前的本機資料，建議先下載 JSON 備份。確定嗎？'))return;window.plantCloudData.set(baseData);ready=true;dirty=false;hideChoices();setState('已同步','已載入雲端資料。');watchCloud()};
+async function saveInitial(data){if(!user)return;ready=false;busy=true;hideChoices();setState('上傳中','正在確認雲端版本並儲存資料。');try{const expected=baseRev;const rev=await runTransaction(firestore,async tx=>{const snap=await tx.get(docRef);const actual=snap.exists()?snap.data().revision??null:null;if(actual!==expected)throw new Error('REMOTE_CHANGED');const next=(actual??0)+1;tx.set(docRef,{data,revision:next,updatedAt:serverTimestamp(),format:'plantmix_v12'});return next});baseRev=rev;baseData=clone(data);window.plantCloudData.set(data);ready=true;dirty=false;setState('已同步','本機與雲端已同步，可以正常操作。');watchCloud()}catch(e){setState('上傳失敗',e.message==='REMOTE_CHANGED'?'雲端剛剛被其他裝置更新，請重新檢查再決定。':`${e.code||''} ${e.message}`);listChoices()}finally{busy=false}}
+$('cloudMerge').onclick=()=>{if(!baseData)return;if(!confirm('合併會保留兩端不同 ID 的資材、配方和紀錄；相同 ID 以雲端為準，計算設定以本機為準。先下載備份後確定合併？'))return;saveInitial(merge(current(),baseData))};
+$('cloudReplace').onclick=()=>{if(!confirm('警告：這會用目前本機資料覆蓋雲端所有資料，其他裝置先前的刪除和編輯也可能被覆蓋。確認已備份並繼續？'))return;saveInitial(current())};
+retry.onclick=()=>inspect();
+window.addEventListener('online',()=>{if(ready&&dirty)sync();else if(!ready&&user)inspect()});
+try{
+ const [{initializeApp},{getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged},fs]=await Promise.all([
+ import('https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js'),
+ import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js'),
+ import('https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js')]);
+ ({doc,getDoc,onSnapshot,runTransaction,serverTimestamp}=fs);
+ const app=initializeApp(firebaseConfig);firebaseAuth=getAuth(app);firebaseAuth.languageCode='zh-TW';
+ firestore=fs.getFirestore(app);
+ const provider=new GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});
+ onAuthStateChanged(firebaseAuth,async u=>{
+  if(unsubscribe){unsubscribe();unsubscribe=null}clearTimeout(timer);user=u;ready=false;dirty=false;login.disabled=false;
+  if(!u){status.textContent='尚未登入。請使用指定 Google 帳號。';identity.textContent='';login.classList.remove('hide');logout.classList.add('hide');copy.classList.add('hide');setState('本機模式','目前僅使用本機儲存。登入後才可啟用雲端同步。');hideChoices();return}
+  status.textContent='✅ Google 登入成功';identity.textContent=`${u.displayName||'Google 使用者'}｜${u.email||''}｜UID：${u.uid}`;login.classList.add('hide');logout.classList.remove('hide');copy.classList.remove('hide');
+  copy.onclick=async()=>{try{await navigator.clipboard.writeText(u.uid);status.textContent='✅ UID 已複製'}catch{status.textContent='UID 複製失敗'}};
+  if(u.uid!==OWNER_UID){setState('拒絕存取','目前登入的 Google 帳號不是指定管理員，無法讀寫雲端。請登出並改用正確帳號。');hideChoices();return}
+  docRef=doc(firestore,'users',u.uid,'data','main');await inspect();
+ },err=>{status.textContent='登入狀態失敗：'+err.message});
+ login.onclick=async()=>{login.disabled=true;try{await signInWithPopup(firebaseAuth,provider)}catch(e){status.textContent=`登入失敗：${e.code||''} ${e.message}`}finally{login.disabled=false}};
+ logout.onclick=async()=>{if(dirty&&!confirm('目前有未同步修改。登出可能導致修改只留在這台裝置。仍要登出？'))return;try{await signOut(firebaseAuth)}catch(e){status.textContent='登出失敗：'+e.message}};
+}catch(e){status.textContent='Firebase 初始化失敗：'+e.message;setState('無法連線','請確認網路與 Firebase SDK。')}
 </script>
 </body></html>
