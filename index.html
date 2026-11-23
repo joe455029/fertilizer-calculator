@@ -81,7 +81,7 @@ const firebaseConfig = {
   messagingSenderId: "333155120474",
   appId: "1:333155120474:web:a0bd970e7dd3e88dc92f63"
 };
-const OWNER_UID = '1qh1dkPj1Gef4UcIpP5XZHK3kfz1';
+// 使用 Firebase Authentication 的實際 UID；授權由 Firestore Security Rules 驗證。
 const $ = id => document.getElementById(id);
 const status=$('authStatus'),identity=$('authIdentity'),login=$('googleLogin'),logout=$('googleLogout'),copy=$('copyUid');
 const badge=$('cloudBadge'),message=$('cloudMessage'),choices=$('cloudChoices'),retry=$('cloudRetry');
@@ -117,13 +117,13 @@ async function sync(force=false){if(!ready||!user||busy||!navigator.onLine)retur
  catch(e){dirty=true;ready=false;if(e.message==='REMOTE_CHANGED'){setState('版本衝突','另一台裝置已更新雲端。請先下載本機備份，再選擇使用雲端、合併或覆蓋。')}else setState('同步失敗',`${e.code||''} ${e.message}。請確認網路及規則，按「重新載入同步狀態」。`);listChoices()}
  finally{busy=false;if(ready&&dirty)clearTimeout(timer),timer=setTimeout(()=>sync(),1400)}
 }
-async function inspect(){if(!user||user.uid!==OWNER_UID)return;ready=false;dirty=false;hideChoices();setState('檢查中','正在檢查雲端資料，尚未寫入任何內容。');try{const snap=await getDoc(docRef);const remote=snap.exists()?snap.data():null;baseRev=remote?.revision??null;baseData=remote?.data?normalize(remote.data):null;
+async function inspect(){if(!user)return;ready=false;dirty=false;hideChoices();setState('檢查中','正在檢查雲端資料，尚未寫入任何內容。');try{const snap=await getDoc(docRef);const remote=snap.exists()?snap.data():null;baseRev=remote?.revision??null;baseData=remote?.data?normalize(remote.data):null;
  if(!baseData){setState('首次設定','雲端目前沒有資料。請先下載備份，再點「以本機覆蓋雲端」建立第一份資料；若本機有舊資料將一併上傳。');listChoices();$('cloudUse').disabled=true;$('cloudMerge').disabled=true;return}
  $('cloudUse').disabled=false;$('cloudMerge').disabled=false;
  const local=current();if(isLocalBlank(local)){window.plantCloudData.set(baseData);ready=true;setState('已同步','已自動載入雲端資料（這台裝置沒有既有資材或紀錄）。');watchCloud();return}
  if(JSON.stringify(local)===JSON.stringify(baseData)){ready=true;setState('已同步','本機資料與雲端一致，可以直接操作。');watchCloud();return}
  setState('等待選擇','本機與雲端都有資料且內容不同。請先備份，再選擇使用雲端、合併，或以本機覆蓋雲端。');listChoices();
- }catch(e){setState('讀取失敗',`${e.code||''} ${e.message}。目前僅可本機使用。`);retry.style.display='inline-block'}}
+ }catch(e){setState(e.code==='permission-denied'?'雲端權限被拒絕':'讀取失敗',e.code==='permission-denied'?'Firestore 安全規則內指定的 UID 可能與實際登入 UID 不一致。請從上方「複製 UID」取得正確值，核對並重新發布規則；目前資料僅在本機。':`${e.code||''} ${e.message}。目前僅可本機使用。`);retry.style.display='inline-block'}}
 $('cloudUse').onclick=()=>{if(!baseData)return;if(!confirm('使用雲端資料會取代這台裝置目前的本機資料，建議先下載 JSON 備份。確定嗎？'))return;window.plantCloudData.set(baseData);ready=true;dirty=false;hideChoices();setState('已同步','已載入雲端資料。');watchCloud()};
 async function saveInitial(data){if(!user)return;ready=false;busy=true;hideChoices();setState('上傳中','正在確認雲端版本並儲存資料。');try{const expected=baseRev;const rev=await runTransaction(firestore,async tx=>{const snap=await tx.get(docRef);const actual=snap.exists()?snap.data().revision??null:null;if(actual!==expected)throw new Error('REMOTE_CHANGED');const next=(actual??0)+1;tx.set(docRef,{data,revision:next,updatedAt:serverTimestamp(),format:'plantmix_v12'});return next});baseRev=rev;baseData=clone(data);window.plantCloudData.set(data);ready=true;dirty=false;setState('已同步','本機與雲端已同步，可以正常操作。');watchCloud()}catch(e){setState('上傳失敗',e.message==='REMOTE_CHANGED'?'雲端剛剛被其他裝置更新，請重新檢查再決定。':`${e.code||''} ${e.message}`);listChoices()}finally{busy=false}}
 $('cloudMerge').onclick=()=>{if(!baseData)return;if(!confirm('合併會保留兩端不同 ID 的資材、配方和紀錄；相同 ID 以雲端為準，計算設定以本機為準。先下載備份後確定合併？'))return;saveInitial(merge(current(),baseData))};
@@ -144,7 +144,6 @@ try{
   if(!u){status.textContent='尚未登入。請使用指定 Google 帳號。';identity.textContent='';login.classList.remove('hide');logout.classList.add('hide');copy.classList.add('hide');setState('本機模式','目前僅使用本機儲存。登入後才可啟用雲端同步。');hideChoices();return}
   status.textContent='✅ Google 登入成功';identity.textContent=`${u.displayName||'Google 使用者'}｜${u.email||''}｜UID：${u.uid}`;login.classList.add('hide');logout.classList.remove('hide');copy.classList.remove('hide');
   copy.onclick=async()=>{try{await navigator.clipboard.writeText(u.uid);status.textContent='✅ UID 已複製'}catch{status.textContent='UID 複製失敗'}};
-  if(u.uid!==OWNER_UID){setState('拒絕存取','目前登入的 Google 帳號不是指定管理員，無法讀寫雲端。請登出並改用正確帳號。');hideChoices();return}
   docRef=doc(firestore,'users',u.uid,'data','main');await inspect();
  },err=>{status.textContent='登入狀態失敗：'+err.message});
  login.onclick=async()=>{login.disabled=true;try{await signInWithPopup(firebaseAuth,provider)}catch(e){status.textContent=`登入失敗：${e.code||''} ${e.message}`}finally{login.disabled=false}};
